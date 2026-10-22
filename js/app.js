@@ -278,7 +278,11 @@ function applyGlobalStyle() {
 
 // Marge rondom het afdrukvlak: de tafelkalender gaat toch uitgeknipt worden, dus die
 // drukt (zo goed als) randloos af om zo veel mogelijk ruimte te benutten.
-const PRINT_MARGIN_CM = { normal: 1.2, tent: 0 };
+// 0cm ("randloos") lukt in de praktijk niet: bijna geen enkele printer kan echt tot de
+// rand bedrukken en knipt dan net iets van de kop/linkerkant af. De browser rekent
+// doorgaans met een iets kleinere onbedrukbare rand dan de printer zelf hanteert,
+// dus houden we extra marge aan om dat verschil op te vangen.
+const PRINT_MARGIN_CM = { normal: 1.2, tent: 0.7 };
 
 // Staat op liggend wanneer er veel maanden naast elkaar staan (anders past de grid niet
 // netjes op staand papier); de tafelkalender blijft staand (2 gestapelde helften).
