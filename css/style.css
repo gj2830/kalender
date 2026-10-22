@@ -406,6 +406,9 @@ input[type="range"] { padding: 0; accent-color: var(--accent); }
   .layout { padding: 0; display: block; }
   body { background: #fff; }
   body.print-hide-info .month-info { display: none; }
+  /* "vandaag" is niet relevant op een geprinte pagina (en meestal al achterhaald
+     tegen de tijd dat 'm gelezen wordt) */
+  .is-today { box-shadow: none; font-weight: inherit; }
 
   /* Standaard print: dezelfde rijen/kolommen-indeling als op het scherm */
   .calendar-root {

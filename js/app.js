@@ -600,9 +600,12 @@ function fitTentToOnePage(root) {
   const { width: pageWidth, height: pageHeight } = tentPageContentSizePx();
   root.style.width = pageWidth + 'px';
 
-  const BASE_CAL = 0.52, BASE_FEEST = 0.4;
+  // start vanaf de lettergrootte die ook op het scherm/bij de gewone print gekozen is
+  // (zelfde formule als applyGlobalStyle), en verklein pas als het anders niet past
+  const BASE_CAL = 0.75 + settings.fontSize * 0.1;
+  const BASE_FEEST = 0.62 + settings.feestSize * 0.07;
   const BASE_GAP = 0.4, BASE_FOLD_MARGIN = 0.25, BASE_SHEET_GAP = 0.6;
-  const MIN_SCALE = 0.5;
+  const MIN_SCALE = 0.35;
   let scale = 1;
   for (let i = 0; i < 10; i++) {
     root.style.setProperty('--cal-font-size', (BASE_CAL * scale).toFixed(3) + 'rem');
