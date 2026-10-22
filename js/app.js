@@ -24,6 +24,7 @@ const DEFAULTS = {
   font: "system-ui, sans-serif",
   fontSize: 1,
   feestSize: 1,
+  rowSpacing: 6,
   theme: 'light',
   weekStyle: 'normal',
   weekPos: 'back',
@@ -119,6 +120,10 @@ function bindControls() {
   el('optFeestSize').value = settings.feestSize;
   el('sizeFeestVal').textContent = settings.feestSize;
   el('optFeestSize').addEventListener('input', e => { el('sizeFeestVal').textContent = e.target.value; set('feestSize', parseInt(e.target.value)); });
+
+  el('optRowSpacing').value = settings.rowSpacing;
+  el('rowSpacingVal').textContent = settings.rowSpacing;
+  el('optRowSpacing').addEventListener('input', e => { el('rowSpacingVal').textContent = e.target.value; set('rowSpacing', parseInt(e.target.value)); });
 
   el('optTheme').value = settings.theme;
   el('optTheme').addEventListener('change', e => set('theme', e.target.value));
@@ -270,6 +275,7 @@ function applyGlobalStyle() {
   root.style.setProperty('--cal-font', settings.font);
   root.style.setProperty('--cal-font-size', (0.75 + settings.fontSize * 0.1) + 'rem');
   root.style.setProperty('--feest-font-size', (0.62 + settings.feestSize * 0.07) + 'rem');
+  root.style.setProperty('--row-spacing', ((settings.rowSpacing - 1) * 0.07) + 'rem');
   document.body.dataset.theme = settings.theme;
   document.body.classList.toggle('print-hide-info', !settings.printInfo);
   document.body.classList.toggle('print-tent', settings.printTent);

@@ -261,7 +261,7 @@ input[type="range"] { padding: 0; accent-color: var(--accent); }
 }
 .month-table td {
   text-align: center;
-  padding: 0.35rem 0;
+  padding: var(--row-spacing, 0.35rem) 0;
   position: relative;
   border-radius: 6px;
   transition: background .15s ease, box-shadow .15s ease, transform .15s ease, color .15s ease;
