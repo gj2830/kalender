@@ -151,6 +151,14 @@
             <option value="front">Vooraan</option>
           </select>
         </label>
+        <label class="field">
+          Weken per 4 weken
+          <select id="optWeekBanding">
+            <option value="off" selected>Uit</option>
+            <option value="bold">Afwisselend vet</option>
+            <option value="line">Streep tussen blokken</option>
+          </select>
+        </label>
         <label class="check"><input type="checkbox" id="optSatRed" checked> Zaterdagen rood</label>
         <label class="check"><input type="checkbox" id="optSunRed" checked> Zondagen rood</label>
         <label class="check"><input type="checkbox" id="optTodayBorder" checked> Vandaag met rood randje</label>
@@ -184,8 +192,8 @@
 <dialog id="printDialog" class="print-dialog">
   <h3>🖨️ Printinstellingen</h3>
   <label class="check"><input type="checkbox" id="optPrintInfo"> Feestdagenlijst meeprinten</label>
-  <label class="check"><input type="checkbox" id="optPrintTent"> Tafelkalender: bovenste helft ondersteboven</label>
-  <p class="hint">Tafelkalender zet telkens 2 maanden op één vel: de bovenste ondersteboven, de onderste rechtop. Knip of vouw het vel op de stippellijn in het midden door, en zet 'm als tentje op tafel — vanaf beide kanten leesbaar.</p>
+  <label class="check"><input type="checkbox" id="optPrintTent"> Tafelkalender (vouwstandaard)</label>
+  <p class="hint">Zet de maanden in gelijke banden onder elkaar op 1 vel, zo veel als er "naast elkaar" staan ingesteld. Knip de strook uit en vouw 'm op de stippellijnen tot een staande standaard.</p>
   <div class="dialog-actions">
     <button id="cancelPrint" type="button" class="btn-secondary btn-small">Annuleren</button>
     <button id="doPrint" type="button" class="btn-primary btn-small">🖨️ Nu printen</button>

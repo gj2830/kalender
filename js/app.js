@@ -27,6 +27,7 @@ const DEFAULTS = {
   theme: 'light',
   weekStyle: 'normal',
   weekPos: 'back',
+  weekBanding: 'off',
   printInfo: false,
   printTent: false,
   satRed: true,
@@ -127,6 +128,9 @@ function bindControls() {
 
   el('optWeekPos').value = settings.weekPos;
   el('optWeekPos').addEventListener('change', e => set('weekPos', e.target.value));
+
+  el('optWeekBanding').value = settings.weekBanding;
+  el('optWeekBanding').addEventListener('change', e => set('weekBanding', e.target.value));
 
   ['satRed','sunRed','todayBorder','holidayBold','infoUnder','tooltip','printInfo','printTent'].forEach(k => {
     const optId = 'opt' + k[0].toUpperCase() + k.slice(1);
@@ -272,6 +276,10 @@ function applyGlobalStyle() {
   applyPrintPageSize();
 }
 
+// Marge rondom het afdrukvlak: de tafelkalender gaat toch uitgeknipt worden, dus die
+// drukt (zo goed als) randloos af om zo veel mogelijk ruimte te benutten.
+const PRINT_MARGIN_CM = { normal: 1.2, tent: 0 };
+
 // Staat op liggend wanneer er veel maanden naast elkaar staan (anders past de grid niet
 // netjes op staand papier); de tafelkalender blijft staand (2 gestapelde helften).
 function applyPrintPageSize() {
@@ -282,7 +290,8 @@ function applyPrintPageSize() {
     document.head.appendChild(style);
   }
   const landscape = settings.cols >= 4;
-  style.textContent = `@media print { @page { size: ${landscape ? 'landscape' : 'portrait'}; margin: 1.2cm; } }`;
+  const margin = settings.printTent ? PRINT_MARGIN_CM.tent : PRINT_MARGIN_CM.normal;
+  style.textContent = `@media print { @page { size: ${landscape ? 'landscape' : 'portrait'}; margin: ${margin}cm; } }`;
 }
 
 function buildMonthList() {
@@ -376,6 +385,15 @@ function renderMonth(year, month) {
   for (let w = 0; w < cells.length / 7; w++) {
     const tr = document.createElement('tr');
     const weekCells = cells.slice(w * 7, w * 7 + 7);
+    const firstDayInWeek = weekCells.find(d => d !== null);
+    const weekNum = firstDayInWeek ? isoWeekNumber(new Date(year, month - 1, firstDayInWeek)) : null;
+    if (weekNum !== null) {
+      if (settings.weekBanding === 'bold' && Math.floor((weekNum - 1) / 4) % 2 === 1) {
+        tr.classList.add('week-band-bold');
+      } else if (settings.weekBanding === 'line' && (weekNum - 1) % 4 === 0) {
+        tr.classList.add('week-band-line');
+      }
+    }
     let weekHasDay = false;
     const dayTds = weekCells.map((d, idx) => {
       const td = document.createElement('td');
@@ -415,10 +433,7 @@ function renderMonth(year, month) {
     });
     const wkTd = document.createElement('td');
     wkTd.className = 'wk-col ' + 'wk-' + settings.weekStyle;
-    if (weekHasDay) {
-      const firstDayInWeek = weekCells.find(d => d !== null) || 1;
-      wkTd.textContent = isoWeekNumber(new Date(year, month - 1, firstDayInWeek));
-    }
+    if (weekHasDay) wkTd.textContent = weekNum;
     const rowCells = settings.weekPos === 'front' ? [wkTd, ...dayTds] : [...dayTds, wkTd];
     rowCells.forEach(td => tr.appendChild(td));
     tbody.appendChild(tr);
@@ -464,8 +479,9 @@ function render() {
 }
 
 // Tafelkalender voor printen: net als op het scherm staan er "Maanden naast elkaar"
-// maandparen naast elkaar op één vel. Elke kolom is 1 paar: boven ondersteboven,
-// onder rechtop — na uitknippen en vouwen op de stippellijn staat 'm als leesbaar tentje.
+// maanden op één vel, in gelijke banden onder elkaar (zoveel als er maanden zijn
+// gedeeld door 2x het aantal kolommen). Na uitknippen en vouwen op de stippellijnen
+// (binnen én tussen de banden) staat 'm als een meervlakkige, staande standaard.
 function buildTentRoot(months) {
   const old = document.getElementById('tentRoot');
   if (old) old.remove();
@@ -482,6 +498,9 @@ function buildTentRoot(months) {
     const chunk = months.slice(s, s + monthsPerSheet);
     const sheet = document.createElement('div');
     sheet.className = 'tent-sheet';
+    // een restband (minder maanden over dan er kolommen zijn) heeft een lege onderrij;
+    // die doet niet mee aan het gelijktrekken, anders reserveert 'ie onnodig veel witruimte
+    sheet.dataset.full = chunk.length === monthsPerSheet ? '1' : '0';
 
     // boven- en onderhelften zijn 2 losse doorlopende rijen, met 1 vouwlijn die over
     // de hele breedte recht doorloopt (i.p.v. per kolom een eigen, scheve vouwlijn)
@@ -493,13 +512,19 @@ function buildTentRoot(months) {
     bottomRow.className = 'tent-row';
     bottomRow.style.setProperty('--tent-cols', colsPerSheet);
 
+    // bovenrij = schermrij 1 (bv. jan-jun), onderrij = schermrij 2 (bv. jul-dec). Geen
+    // van beide wordt gedraaid: bij een doorlopende strook met meerdere vouwen (de
+    // banden na elkaar) zet het fysieke vouwen zelf alles al goed om — extra op de kop
+    // zetten in de opmaak werkt dan juist averechts.
+    const topMonths = chunk.slice(0, colsPerSheet);
+    const bottomMonths = chunk.slice(colsPerSheet, monthsPerSheet);
+
     for (let c = 0; c < colsPerSheet; c++) {
-      const top = chunk[c * 2];
-      const bottom = chunk[c * 2 + 1];
-      if (!top && !bottom) break; // geen maanden meer over voor deze kolom
+      const top = topMonths[c];
+      const bottom = bottomMonths[c];
 
       const topHalf = document.createElement('div');
-      topHalf.className = 'tent-half tent-half--rotated';
+      topHalf.className = 'tent-half';
       if (top) topHalf.appendChild(renderMonth(top.year, top.month));
       topRow.appendChild(topHalf);
 
@@ -509,14 +534,79 @@ function buildTentRoot(months) {
       bottomRow.appendChild(bottomHalf);
     }
 
-    const fold = document.createElement('div');
-    fold.className = 'tent-fold';
-
-    sheet.append(topRow, fold, bottomRow);
+    sheet.appendChild(topRow);
+    if (bottomMonths.some(m => m)) {
+      // alleen een vouwlijn + onderrij als daar ook echt nog een maand in komt
+      const fold = document.createElement('div');
+      fold.className = 'tent-fold';
+      sheet.append(fold, bottomRow);
+    }
     root.appendChild(sheet);
+
+    // ook tússen de banden zelf komt een vouwlijn (niet alleen binnen 1 band tussen
+    // boven/onder), zodat je de hele strook in 1x tot een meervlakkige standaard vouwt
+    if (s + monthsPerSheet < months.length) {
+      const divider = document.createElement('div');
+      divider.className = 'tent-divider';
+      root.appendChild(divider);
+    }
   }
 
   document.body.appendChild(root);
+  fitTentToOnePage(root);
+}
+
+// Maakt alle VOLLE banden (vellen) even hoog, zodat je ze na het printen in 1 lange
+// strook kunt uitknippen en tot een nette driehoekige tafelstandaard kunt vouwen. Een
+// onvolledige restband (te weinig maanden over voor een hele band) doet niet mee en
+// houdt gewoon zijn eigen, compacte hoogte.
+function equalizeTentSheetHeights(root) {
+  const allSheets = [...root.querySelectorAll('.tent-sheet')];
+  allSheets.forEach(s => { s.style.minHeight = ''; });
+  const fullSheets = allSheets.filter(s => s.dataset.full === '1');
+  if (fullSheets.length < 2) return;
+  const maxHeight = Math.max(...fullSheets.map(s => s.getBoundingClientRect().height));
+  fullSheets.forEach(s => { s.style.minHeight = maxHeight + 'px'; });
+}
+
+const CM_TO_PX = 96 / 2.54;
+const A4_CM = { short: 21.0, long: 29.7 };
+
+// Afmetingen van het bedrukbare vlak van 1 A4-pagina, in dezelfde stand (staand/liggend)
+// en met dezelfde marge die ook echt gebruikt wordt bij het printen (zie applyPrintPageSize).
+function tentPageContentSizePx() {
+  const landscape = settings.cols >= 4;
+  const marginCm = PRINT_MARGIN_CM.tent;
+  const wCm = (landscape ? A4_CM.long : A4_CM.short) - marginCm * 2;
+  const hCm = (landscape ? A4_CM.short : A4_CM.long) - marginCm * 2;
+  return { width: wCm * CM_TO_PX, height: hCm * CM_TO_PX };
+}
+
+// Trekt de banden gelijk en meet daarna of alles samen op 1 pagina past. Past het niet,
+// dan wordt de tekst van de tafelkalender automatisch wat kleiner gemaakt (tot een
+// leesbare ondergrens) zodat het alsnog op 1 vel past — past het dan nóg niet, dan is
+// er simpelweg te veel inhoud voor 1 pagina en volgen er meerdere vellen.
+function fitTentToOnePage(root) {
+  const { width: pageWidth, height: pageHeight } = tentPageContentSizePx();
+  root.style.width = pageWidth + 'px';
+
+  const BASE_CAL = 0.52, BASE_FEEST = 0.4;
+  const BASE_GAP = 0.4, BASE_FOLD_MARGIN = 0.25, BASE_SHEET_GAP = 0.6;
+  const MIN_SCALE = 0.5;
+  let scale = 1;
+  for (let i = 0; i < 10; i++) {
+    root.style.setProperty('--cal-font-size', (BASE_CAL * scale).toFixed(3) + 'rem');
+    root.style.setProperty('--feest-font-size', (BASE_FEEST * scale).toFixed(3) + 'rem');
+    root.style.setProperty('--tent-gap', (BASE_GAP * scale).toFixed(3) + 'cm');
+    root.style.setProperty('--tent-fold-margin', (BASE_FOLD_MARGIN * scale).toFixed(3) + 'cm');
+    root.style.setProperty('--tent-sheet-gap', (BASE_SHEET_GAP * scale).toFixed(3) + 'cm');
+    root.querySelectorAll('.tent-sheet').forEach(s => { s.style.minHeight = ''; });
+    equalizeTentSheetHeights(root);
+
+    const totalHeight = root.scrollHeight;
+    if (totalHeight <= pageHeight || scale <= MIN_SCALE) break;
+    scale = Math.max(MIN_SCALE, scale * (pageHeight / totalHeight) * 0.97);
+  }
 }
 
 // ---------- init ----------
