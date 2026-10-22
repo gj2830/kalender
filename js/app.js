@@ -36,7 +36,6 @@ const DEFAULTS = {
   infoUnder: true,
   weekVertical: false,
   tooltip: true,
-  printOnly: false,
 };
 
 let settings = loadSettings();
@@ -121,7 +120,7 @@ function bindControls() {
   el('optWeekPos').value = settings.weekPos;
   el('optWeekPos').addEventListener('change', e => set('weekPos', e.target.value));
 
-  ['satRed','sunRed','todayBorder','holidayBold','infoUnder','weekVertical','tooltip','printOnly','printInfo','printTent'].forEach(k => {
+  ['satRed','sunRed','todayBorder','holidayBold','infoUnder','weekVertical','tooltip','printInfo','printTent'].forEach(k => {
     const optId = 'opt' + k[0].toUpperCase() + k.slice(1);
     el(optId).checked = settings[k];
     el(optId).addEventListener('change', e => set(k, e.target.checked));
@@ -260,7 +259,6 @@ function applyGlobalStyle() {
   root.style.setProperty('--cal-font-size', (0.75 + settings.fontSize * 0.1) + 'rem');
   root.style.setProperty('--feest-font-size', (0.62 + settings.feestSize * 0.07) + 'rem');
   document.body.dataset.theme = settings.theme;
-  document.body.classList.toggle('print-only', settings.printOnly);
   document.body.classList.toggle('print-hide-info', !settings.printInfo);
   document.body.classList.toggle('print-tent', settings.printTent);
   applyPrintPageSize();

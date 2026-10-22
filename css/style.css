@@ -409,8 +409,3 @@ input[type="range"] { padding: 0; accent-color: var(--accent); }
     margin: 0.25cm 0;
   }
 }
-
-body.print-only .topbar, body.print-only .today-line, body.print-only .panel, body.print-only .sitefooter {
-  display: none !important;
-}
-body.print-only .layout { padding: 0.5rem; }
