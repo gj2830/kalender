@@ -37,6 +37,10 @@ const DEFAULTS = {
   tooltip: true,
 };
 
+// instellingen die niet meer bestaan maar nog in iemands opgeslagen voorkeuren of
+// gedeelde link kunnen staan; worden bij het laden genegeerd en opgeruimd
+const REMOVED_KEYS = ['printOnly', 'weekVertical'];
+
 let settings = loadSettings();
 
 function loadSettings() {
@@ -51,6 +55,11 @@ function loadSettings() {
       s = { ...s, ...fromHash };
     }
   } catch (e) {}
+  let hadRemovedKey = false;
+  REMOVED_KEYS.forEach(k => { if (k in s) { delete s[k]; hadRemovedKey = true; } });
+  if (hadRemovedKey) {
+    try { localStorage.setItem('kalenderSettings', JSON.stringify(s)); } catch (e) {}
+  }
   return s;
 }
 
