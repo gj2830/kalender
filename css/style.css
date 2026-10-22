@@ -1,0 +1,416 @@
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --text: #1c2333;
+  --muted: #6b7382;
+  --accent: #3a63f0;
+  --accent-contrast: #ffffff;
+  --border: #e3e7f0;
+  --weekend: #d6425a;
+  --holiday: #c2410c;
+  --today-ring: #e3342f;
+  --panel-bg: #ffffff;
+  --cal-font: system-ui, sans-serif;
+  --cal-font-size: 0.85rem;
+  --feest-font-size: 0.69rem;
+  --radius: 14px;
+  --shadow: 0 1px 3px rgba(20, 25, 40, 0.06), 0 8px 24px rgba(20, 25, 40, 0.05);
+}
+
+body.dark-ui {
+  --bg: #11141c;
+  --surface: #181c27;
+  --text: #e9ecf5;
+  --muted: #9aa2b4;
+  --accent: #6d8cff;
+  --accent-contrast: #0b0e16;
+  --border: #272c3a;
+  --panel-bg: #161a24;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+
+body[data-theme="groen"] { --bg: #eef7ee; --accent: #2f8f4e; }
+body[data-theme="blauw"] { --bg: #eaf2fb; --accent: #2563eb; }
+body[data-theme="sahara"] { --bg: #faf3e4; --accent: #c2792a; }
+body[data-theme="dark"] {
+  --bg: #0f1117; --surface: #171a23; --text: #e9ecf5; --muted: #99a0b2;
+  --border: #272c3a; --panel-bg: #14161f; --accent: #6d8cff;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  transition: background .2s ease, color .2s ease;
+}
+
+a { color: var(--accent); }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.brand { display: flex; align-items: center; gap: 0.75rem; }
+.brand-icon { font-size: 2rem; }
+.brand h1 { margin: 0; font-size: 1.25rem; }
+.tagline { margin: 0.1rem 0 0; font-size: 0.8rem; color: var(--muted); }
+
+.topbar-actions { display: flex; gap: 0.5rem; }
+
+.icon-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.icon-btn:hover { border-color: var(--accent); }
+
+.today-line {
+  text-align: center;
+  margin: 0.9rem auto 0.3rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  max-width: 900px;
+  padding: 0 1rem;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1rem 3rem;
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+.panel {
+  width: 252px;
+  flex-shrink: 0;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+}
+
+.panel-scroll {
+  overflow-y: auto;
+  max-height: calc(100vh - 2rem);
+  padding: 1rem 0.9rem 1.6rem;
+}
+
+.group { margin-bottom: 1.6rem; }
+.group h2 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 0 0 0.7rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.4rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  margin-bottom: 0.7rem;
+  color: var(--text);
+}
+.field .val { color: var(--accent); font-weight: 600; }
+
+.field input, .field select {
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+input[type="range"] { padding: 0; accent-color: var(--accent); }
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+.check input { accent-color: var(--accent); }
+
+.hint { font-size: 0.75rem; color: var(--muted); margin: 0 0 0.6rem; }
+
+.own-table { width: 100%; border-collapse: collapse; margin-bottom: 0.6rem; }
+.own-table th { font-size: 0.68rem; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0.2rem 0.3rem; }
+.own-table td { padding: 0.2rem 0.25rem; }
+.own-table input, .own-table select {
+  width: 100%;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+.btn-del {
+  background: none;
+  border: none;
+  color: var(--weekend);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-primary, .btn-secondary, .btn-ghost {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.btn-primary { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); font-weight: 600; }
+.btn-secondary { background: var(--surface); color: var(--text); }
+.btn-ghost { background: transparent; color: var(--muted); border-style: dashed; }
+.btn-small { font-size: 0.78rem; padding: 0.45rem 0.6rem; }
+
+.print-dialog {
+  border: none;
+  border-radius: var(--radius);
+  padding: 1.3rem 1.4rem 1.1rem;
+  width: min(380px, 90vw);
+  background: var(--panel-bg);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.print-dialog::backdrop {
+  background: rgba(10, 12, 20, 0.5);
+  backdrop-filter: blur(1px);
+}
+.print-dialog h3 {
+  margin: 0 0 0.9rem;
+  font-size: 1.02rem;
+}
+.print-dialog .check { font-size: 0.85rem; }
+.print-dialog .hint { margin: 0.5rem 0 0; }
+.dialog-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+.dialog-actions button { margin-bottom: 0; flex: 1; }
+
+.calendar-root {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(170px, 1fr));
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.month-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.9rem 0.9rem 0.7rem;
+  font-family: var(--cal-font);
+}
+
+.month-card h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  text-align: center;
+  color: var(--accent);
+}
+
+.month-table { width: 100%; border-collapse: collapse; font-size: var(--cal-font-size); }
+.month-table th {
+  color: var(--muted);
+  font-weight: 600;
+  padding: 0.25rem 0;
+  font-size: 0.72em;
+  text-transform: uppercase;
+}
+.month-table td {
+  text-align: center;
+  padding: 0.35rem 0;
+  position: relative;
+  border-radius: 6px;
+  transition: background .15s ease, box-shadow .15s ease, transform .15s ease, color .15s ease;
+}
+.month-table tbody tr:hover td:not(:empty) { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+/* speciale dagen (feestdagen / eigen dagen) lichten op bij hover, of wanneer de
+   bijbehorende regel onderaan de maand gehoverd wordt (.highlight-day) */
+.month-table td.is-holiday:hover,
+.month-table td.is-own:hover,
+.month-table td.highlight-day {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  box-shadow: 0 0 0 2px var(--accent);
+  cursor: default;
+}
+.month-table td.is-holiday:hover .day-dot,
+.month-table td.is-own:hover .day-dot,
+.month-table td.highlight-day .day-dot { background: var(--accent-contrast); }
+
+.wk-col { color: var(--muted); font-size: 0.78em; }
+.wk-bold { font-weight: 700; }
+.wk-italic { font-style: italic; }
+.wk-underline { text-decoration: underline; }
+
+.is-weekend { color: var(--weekend); font-weight: 600; }
+.is-holiday { color: var(--holiday); font-weight: 700; }
+.is-own { text-decoration: underline dotted; }
+.is-today { box-shadow: inset 0 0 0 2px var(--today-ring); font-weight: 700; }
+
+.day-dot {
+  display: block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  margin: 1px auto 0;
+  opacity: 0.8;
+}
+
+.month-info {
+  font-size: var(--feest-font-size);
+  color: var(--muted);
+  margin: auto 0 0;
+  line-height: 1.5;
+  border-top: 1px dashed var(--border);
+  padding-top: 0.45rem;
+}
+
+.feest-link {
+  cursor: default;
+  border-radius: 4px;
+  padding: 0 2px;
+  white-space: nowrap;
+  transition: background .12s ease, color .12s ease;
+}
+.feest-link:hover,
+.feest-link.is-linked {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.month-table.week-vertical { writing-mode: horizontal-tb; }
+.month-table.week-vertical .wk-col { writing-mode: vertical-rl; text-orientation: mixed; }
+
+.sitefooter {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  padding: 1.5rem;
+}
+
+.settings-toggle { display: none; }
+
+@media (max-width: 980px) {
+  .layout { flex-direction: column; }
+  .panel {
+    width: 100%;
+    position: static;
+    max-height: none;
+    display: none;
+  }
+  .panel.open { display: block; }
+  .panel-scroll { max-height: 70vh; }
+  .settings-toggle { display: flex; }
+  .calendar-root { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important; }
+}
+
+/* ---------- print ---------- */
+.tent-root { display: none; }
+
+@media print {
+  @page { margin: 1.2cm; }
+
+  .topbar, .today-line, .panel, .sitefooter, .settings-toggle, dialog { display: none !important; }
+  .layout { padding: 0; display: block; }
+  body { background: #fff; }
+  body.print-hide-info .month-info { display: none; }
+
+  /* Standaard print: dezelfde rijen/kolommen-indeling als op het scherm */
+  .calendar-root {
+    display: grid !important;
+    grid-template-columns: repeat(var(--cols, 3), 1fr);
+    gap: 0.5cm;
+    align-items: start;
+  }
+  .month-card { box-shadow: none; border: 1px solid #999; break-inside: avoid; }
+
+  /* Tafelkalender: zoveel maandparen naast elkaar als "Maanden naast elkaar" op het
+     scherm, elke kolom is 1 paar (boven ondersteboven, onder rechtop). Na uitknippen
+     en vouwen op de stippellijn staat elke kolom als los, leesbaar tentje. */
+  body.print-tent .layout { display: none !important; }
+  body.print-tent .tent-root { display: block; }
+
+  .tent-root {
+    --cal-font-size: 0.52rem;
+    --feest-font-size: 0.4rem;
+  }
+  .tent-sheet {
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .tent-sheet:last-child { page-break-after: auto; }
+  .tent-row {
+    display: grid;
+    grid-template-columns: repeat(var(--tent-cols, 1), 1fr);
+    gap: 0.4cm;
+  }
+  .tent-half {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    min-width: 0;
+  }
+  .tent-half--rotated { transform: rotate(180deg); }
+  .tent-half .month-card {
+    width: 100%;
+    box-shadow: none;
+    border: 1px solid #999;
+    padding: 0.3rem 0.3rem 0.2rem;
+    overflow: hidden;
+  }
+  .tent-fold {
+    border-top: 1px dashed #999;
+    margin: 0.25cm 0;
+  }
+}
+
+body.print-only .topbar, body.print-only .today-line, body.print-only .panel, body.print-only .sitefooter {
+  display: none !important;
+}
+body.print-only .layout { padding: 0.5rem; }

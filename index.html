@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De instelbare kalender</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon">📅</span>
+    <div>
+      <h1>De instelbare kalender</h1>
+      <p class="tagline">Stel 'm helemaal naar eigen smaak in.</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button id="themeToggle" class="icon-btn" title="Licht/donker thema">🌓</button>
+    <button id="settingsToggle" class="icon-btn settings-toggle" title="Instellingen">⚙️ Instellingen</button>
+  </div>
+</header>
+
+<p id="todayLine" class="today-line"></p>
+
+<div class="layout">
+
+  <aside id="panel" class="panel">
+    <div class="panel-scroll">
+
+      <section class="group">
+        <h2>Periode</h2>
+        <label class="field">
+          Jaar
+          <input type="number" id="optYear" min="1900" max="2200">
+        </label>
+        <label class="field">
+          Startpunt
+          <select id="optStart">
+            <option value="prev">Vanaf vorige maand</option>
+            <option value="now" selected>Vanaf deze maand</option>
+            <option value="1">Vanaf januari</option>
+            <option value="2">Vanaf februari</option>
+            <option value="3">Vanaf maart</option>
+            <option value="4">Vanaf april</option>
+            <option value="5">Vanaf mei</option>
+            <option value="6">Vanaf juni</option>
+            <option value="7">Vanaf juli</option>
+            <option value="8">Vanaf augustus</option>
+            <option value="9">Vanaf september</option>
+            <option value="10">Vanaf oktober</option>
+            <option value="11">Vanaf november</option>
+            <option value="12">Vanaf december</option>
+          </select>
+        </label>
+        <label class="field">
+          Aantal maanden <span id="monthsVal" class="val">6</span>
+          <input type="range" id="optMonths" min="1" max="24" value="6">
+        </label>
+        <label class="field">
+          Maanden naast elkaar <span id="colsVal" class="val">3</span>
+          <input type="range" id="optCols" min="1" max="6" value="3">
+        </label>
+        <label class="field">
+          Eerste dag van de week
+          <select id="optWeekStart">
+            <option value="1" selected>Maandag</option>
+            <option value="0">Zondag</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="group">
+        <h2>Feest- en gedenkdagen</h2>
+        <label class="check"><input type="checkbox" id="catNational" checked> Nationale feesten</label>
+        <label class="check"><input type="checkbox" id="catCatholic"> Katholieke feesten</label>
+        <label class="check"><input type="checkbox" id="catCommercial"> Commerciële feesten</label>
+        <label class="check"><input type="checkbox" id="catRoyal"> Koninklijke familie</label>
+        <label class="check"><input type="checkbox" id="catInfo"> Info (zomertijd, Prinsjesdag e.d.)</label>
+      </section>
+
+      <section class="group">
+        <h2>Eigen dagen</h2>
+        <p class="hint">Verjaardagen, jubilea of gedenkdagen. Vul een jaartal in voor automatische leeftijdsberekening.</p>
+        <table class="own-table" id="ownTable">
+          <thead>
+            <tr><th>Naam</th><th>Datum</th><th>Type</th><th></th></tr>
+          </thead>
+          <tbody id="ownTableBody"></tbody>
+        </table>
+        <button id="addOwnRow" class="btn-secondary btn-small">+ Rij toevoegen</button>
+        <label class="check"><input type="checkbox" id="optShowAge"> Leeftijd tonen bij eigen dagen</label>
+        <label class="field">
+          Sorteren op
+          <select id="optSort">
+            <option value="date">Dag in jaar</option>
+            <option value="name">Naam</option>
+            <option value="age">Leeftijd</option>
+            <option value="type">Type</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="group">
+        <h2>Weergave</h2>
+        <label class="field">
+          Lettertype
+          <select id="optFont">
+            <option value="system-ui, sans-serif">Systeem</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="'Courier New', monospace">Courier New</option>
+          </select>
+        </label>
+        <label class="field">
+          Lettergrootte kalender <span id="sizeVal" class="val">1</span>
+          <input type="range" id="optFontSize" min="1" max="6" value="1">
+        </label>
+        <label class="field">
+          Lettergrootte feestregels <span id="sizeFeestVal" class="val">1</span>
+          <input type="range" id="optFeestSize" min="1" max="6" value="1">
+        </label>
+        <label class="field">
+          Thema
+          <select id="optTheme">
+            <option value="light">Licht</option>
+            <option value="groen">Groen</option>
+            <option value="blauw">Blauw</option>
+            <option value="sahara">Sahara</option>
+            <option value="dark">Donker</option>
+          </select>
+        </label>
+        <label class="field">
+          Weeknummers
+          <select id="optWeekStyle">
+            <option value="normal">Normaal</option>
+            <option value="bold">Vet</option>
+            <option value="italic">Schuin</option>
+            <option value="underline">Onderstreept</option>
+          </select>
+        </label>
+        <label class="field">
+          Weeknummer positie
+          <select id="optWeekPos">
+            <option value="back" selected>Achteraan</option>
+            <option value="front">Vooraan</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="optSatRed" checked> Zaterdagen rood</label>
+        <label class="check"><input type="checkbox" id="optSunRed" checked> Zondagen rood</label>
+        <label class="check"><input type="checkbox" id="optTodayBorder" checked> Vandaag met rood randje</label>
+        <label class="check"><input type="checkbox" id="optHolidayBold" checked> Feestdagen vet</label>
+        <label class="check"><input type="checkbox" id="optInfoUnder" checked> Gegevens onder iedere maand</label>
+        <label class="check"><input type="checkbox" id="optWeekVertical"> Weeknummers horizontaal (kalender kantelt)</label>
+        <label class="check"><input type="checkbox" id="optTooltip" checked> Gegevens tonen bij hover</label>
+      </section>
+
+      <section class="group">
+        <h2>Printen</h2>
+        <button id="printBtn" class="btn-primary btn-small">🖨️ Printen</button>
+      </section>
+
+      <section class="group">
+        <h2>Opslaan &amp; delen</h2>
+        <p class="hint">Alle instellingen staan live in de link hieronder — deel of bewaar 'm, of zet de kalender als embed in je eigen site.</p>
+        <button id="copyLink" class="btn-primary btn-small">🔗 Link kopiëren</button>
+        <button id="copyEmbed" class="btn-secondary btn-small">&lt;/&gt; Embed-code kopiëren</button>
+        <button id="resetAll" class="btn-ghost btn-small">↺ Standaardinstellingen</button>
+      </section>
+
+    </div>
+  </aside>
+
+  <main id="calendarRoot" class="calendar-root"></main>
+
+</div>
+
+<footer class="sitefooter">De instelbare kalender</footer>
+
+<dialog id="printDialog" class="print-dialog">
+  <h3>🖨️ Printinstellingen</h3>
+  <label class="check"><input type="checkbox" id="optPrintOnly"> Enkel de kalender (geen paneel/koptekst)</label>
+  <label class="check"><input type="checkbox" id="optPrintInfo"> Feestdagenlijst meeprinten</label>
+  <label class="check"><input type="checkbox" id="optPrintTent"> Tafelkalender: bovenste helft ondersteboven</label>
+  <p class="hint">Tafelkalender zet telkens 2 maanden op één vel: de bovenste ondersteboven, de onderste rechtop. Knip of vouw het vel op de stippellijn in het midden door, en zet 'm als tentje op tafel — vanaf beide kanten leesbaar.</p>
+  <div class="dialog-actions">
+    <button id="cancelPrint" type="button" class="btn-secondary btn-small">Annuleren</button>
+    <button id="doPrint" type="button" class="btn-primary btn-small">🖨️ Nu printen</button>
+  </div>
+</dialog>
+
+<script src="js/holidays.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
