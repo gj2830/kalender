@@ -323,9 +323,6 @@ input[type="range"] { padding: 0; accent-color: var(--accent); }
   color: var(--accent-contrast);
 }
 
-.month-table.week-vertical { writing-mode: horizontal-tb; }
-.month-table.week-vertical .wk-col { writing-mode: vertical-rl; text-orientation: mixed; }
-
 .sitefooter {
   text-align: center;
   font-size: 0.72rem;

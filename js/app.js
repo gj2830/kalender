@@ -34,7 +34,6 @@ const DEFAULTS = {
   todayBorder: true,
   holidayBold: true,
   infoUnder: true,
-  weekVertical: false,
   tooltip: true,
 };
 
@@ -120,7 +119,7 @@ function bindControls() {
   el('optWeekPos').value = settings.weekPos;
   el('optWeekPos').addEventListener('change', e => set('weekPos', e.target.value));
 
-  ['satRed','sunRed','todayBorder','holidayBold','infoUnder','weekVertical','tooltip','printInfo','printTent'].forEach(k => {
+  ['satRed','sunRed','todayBorder','holidayBold','infoUnder','tooltip','printInfo','printTent'].forEach(k => {
     const optId = 'opt' + k[0].toUpperCase() + k.slice(1);
     el(optId).checked = settings[k];
     el(optId).addEventListener('change', e => set(k, e.target.checked));
@@ -331,7 +330,6 @@ function renderMonth(year, month) {
 
   const table = document.createElement('table');
   table.className = 'month-table';
-  if (settings.weekVertical) table.classList.add('week-vertical');
 
   const dayNames = settings.weekStart === 1 ? DAY_NAMES_MON : DAY_NAMES_SUN;
   const thead = document.createElement('thead');
